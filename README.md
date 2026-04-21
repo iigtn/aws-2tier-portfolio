@@ -1,65 +1,55 @@
-# aws-2tier-portfolio
-
-# AWS 2-Tier Architecture Portfolio
+# AWS 2-Tier Architecture Portfolio (Terraform)
 
 ## 概要
-AWS上にWebサーバーとDBサーバーを分離した2層構成のインフラをTerraformで構築。
-
----
-
-## 使用技術
-- AWS (VPC / EC2 / RDS / Subnet / Security Group / IGW)
-- Terraform
-- MySQL 8.0
-- Linux（Amazon Linux 2）
-
----
-
-## アーキテクチャ構成
-- Public Subnet：EC2（Webサーバ）
-- Private Subnet：RDS（DB）
-- Internet Gateway経由で外部アクセス
-- Security Groupで通信制御
+AWS上にWebサーバー（EC2）とDBサーバー（RDS）を分離した2層構成のインフラをTerraformで構築したポートフォリオです。  
+インフラの再現性・可搬性を意識し、Infrastructure as Code（IaC）で構築しています。
 
 ---
 
 ## 構成図
-（ここに画像を入れる）
+![architecture](./architecture.png)
+
+---
+
+## 使用技術
+- AWS
+  - VPC
+  - EC2
+  - RDS (MySQL 8.0)
+  - Subnet (Public / Private)
+  - Internet Gateway
+  - Route Table
+  - Security Group
+- Terraform
+- Linux (Amazon Linux 2)
+- MySQL 8.0
+
+---
+
+## アーキテクチャ構成
+
+### ネットワーク構成
+- VPC：10.1.0.0/16
+- Public Subnet：Webサーバー配置
+- Private Subnet：RDS配置（外部非公開）
+
+### 通信構成
+Internet → EC2（Webサーバー）→ RDS（DB）
+
+---
+
+## セキュリティ設計
+- RDSをPrivate Subnetに配置し外部から直接アクセス不可
+- Security Groupで最小限の通信のみ許可
+  - SSH：特定IPのみ許可
+  - HTTP：全公開
+  - MySQL：EC2からのみ許可
+- 最小権限の原則に基づいた設計
 
 ---
 
 ## 構築手順
-1. VPC作成
-2. Subnet作成（Public / Private）
-3. Internet Gateway作成
-4. Route Table設定
-5. EC2構築
-6. RDS構築
-7. EC2 → RDS接続確認
-
----
-
-## 工夫した点
-- TerraformによるIaC化
-- セキュリティグループで最小権限設計
-- RDSをPrivate Subnetに配置し外部非公開
-- 変数化による再利用性向上
-
----
-
-## 苦労した点
-- RDSの構成変更による再作成挙動の理解
-- Terraformのstate管理
-
----
-
-## 今後の改善
-- ALB追加（3層構成化）
-- CloudWatch導入
-- Terraform module化
-- CI/CD（GitHub Actions）
-
----
-
-## 作成者
-クラウドインフラ学習中（LinuC / AWS / Terraform）
+```bash
+terraform init
+terraform plan
+terraform apply

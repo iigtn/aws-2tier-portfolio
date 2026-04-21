@@ -1,0 +1,4 @@
+db_username     = "example"
+db_password     = "example"
+public_key_path = "example"
+my_IP           = "example"
